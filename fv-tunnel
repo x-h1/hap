@@ -1,10 +1,10 @@
 #!/bin/bash
 PROJECT=$(curl -sS "https://raw.githubusercontent.com/zhets/ScriptAutoInstall-xdxl/main/anu")
 
-if [ -f /usr/bin/limit.sh ]; then
+if [ ! -f /usr/bin/limit.sh ]; then
 wget -q -O /usr/bin/limit.sh "https://${PROJECT}/ScriptAutoInstall-xdxl/limit.sh"
 fi
-if [ -f /usr/bin/quota.sh ]; then
+if [ ! -f /usr/bin/quota.sh ]; then
 wget -q -O /usr/bin/quota.sh "https://${PROJECT}/ScriptAutoInstall-xdxl/quota.sh"
 fi
 
