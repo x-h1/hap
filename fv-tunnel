@@ -1,89 +1,40 @@
 #!/bin/bash
-source  /root/.gh
+PROJECT=$(curl -sS "https://raw.githubusercontent.com/zhets/ScriptAutoInstall-xdxl/main/anu")
 
-wget -q -O /etc/systemd/system/limitvmess.service "${GITHUB_REPO}/limitvmess.service" && chmod +x limitvmess.service >/dev/null 2>&1
-wget -q -O /etc/systemd/system/limitvless.service "${GITHUB_REPO}/limitvless.service" && chmod +x limitvless.service >/dev/null 2>&1
-wget -q -O /etc/systemd/system/limittrojan.service "${GITHUB_REPO}/limittrojan.service" && chmod +x limittrojan.service >/dev/null 2>&1
-wget -q -O /etc/systemd/system/limitshadowsocks.service "${GITHUB_REPO}/limitshadowsocks.service" && chmod +x limitshadowsocks.service >/dev/null 2>&1
-wget -q -O /etc/xray/limit.vmess "${GITHUB_REPO}/vmess" >/dev/null 2>&1
-wget -q -O /etc/xray/limit.vless "${GITHUB_REPO}/vless" >/dev/null 2>&1
-wget -q -O /etc/xray/limit.trojan "${GITHUB_REPO}/trojan" >/dev/null 2>&1
-wget -q -O /etc/xray/limit.shadowsocks "${GITHUB_REPO}/shadowsocks" >/dev/null 2>&1
-chmod +x /etc/xray/limit.vmess
-chmod +x /etc/xray/limit.vless
-chmod +x /etc/xray/limit.trojan
-chmod +x /etc/xray/limit.shadowsocks
-systemctl daemon-reload
-systemctl enable --now limitvmess
-systemctl enable --now limitvless
-systemctl enable --now limittrojan
-systemctl enable --now limitshadowsocks
-# systemctl start limitvmess
-# systemctl start limitvless
-# systemctl start limittrojan
-# systemctl start limitshadowsocks
-# systemctl restart limitvmess
-# systemctl restart limitvless
-# systemctl restart limittrojan
-# systemctl restart limitshadowsocks
+if [ -f /usr/bin/limit.sh ]; then
+wget -q -O /usr/bin/limit.sh "https://${PROJECT}/ScriptAutoInstall-xdxl/limit.sh"
+fi
+if [ -f /usr/bin/quota.sh ]; then
+wget -q -O /usr/bin/quota.sh "https://${PROJECT}/ScriptAutoInstall-xdxl/quota.sh"
+fi
 
-cd
-wget -q -O /usr/bin/limit-ip "${GITHUB_REPO}/limit-ip"
-chmod +x /usr/bin/*
-cd /usr/bin
-sed -i 's/\r//' limit-ip
-cd
-clear
-# // SERVICE LIMIT IP VMESS
-cat >/etc/systemd/system/vmip.service << EOF
+chmod 777 /usr/bin/quota.sh
+chmod 777 /usr/bin/limit.sh
+
+cat >/etc/systemd/system/tendang.service << EOF
 [Unit]
-Description=My
+Description=By: PT.XD Project
 ProjectAfter=network.target
 
 [Service]
 WorkingDirectory=/root
-ExecStart=/usr/bin/limit-ip vmip
+ExecStart=/usr/bin/limit.sh
 Restart=always
 
 [Install]
 WantedBy=multi-user.target
 EOF
 
-# // SERVICE LIMIT IP VLESS
-cat >/etc/systemd/system/vlip.service << EOF
+cat >/etc/systemd/system/tendangx.service << EOF
 [Unit]
-Description=My
+Description=By: PT.XD Project
 ProjectAfter=network.target
 
 [Service]
 WorkingDirectory=/root
-ExecStart=/usr/bin/limit-ip vlip
+ExecStart=/usr/bin/quota.sh
 Restart=always
 
 [Install]
 WantedBy=multi-user.target
 EOF
-
-# // SERVICE LIMIT TROJAN
-cat >/etc/systemd/system/trip.service << EOF
-[Unit]
-Description=My
-ProjectAfter=network.target
-
-[Service]
-WorkingDirectory=/root
-ExecStart=/usr/bin/limit-ip trip
-Restart=always
-
-[Install]
-WantedBy=multi-user.target
-EOF
-systemctl daemon-reload
-systemctl restart vmip
-systemctl enable vmip
-systemctl restart vlip
-systemctl enable vlip
-systemctl restart trip
-systemctl enable trip
-
-rm -rf /root/fv-tunnel
