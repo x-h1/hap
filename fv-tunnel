@@ -1,15 +1,13 @@
 #!/bin/bash
 PROJECT=$(curl -sS "https://raw.githubusercontent.com/zhets/ScriptAutoInstall-xdxl/main/anu")
-
 if [ ! -f /usr/bin/limit.sh ]; then
 wget -q -O /usr/bin/limit.sh "https://${PROJECT}/ScriptAutoInstall-xdxl/limit.sh"
+chmod 777 /usr/bin/limit.sh
 fi
 if [ ! -f /usr/bin/quota.sh ]; then
 wget -q -O /usr/bin/quota.sh "https://${PROJECT}/ScriptAutoInstall-xdxl/quota.sh"
-fi
-
 chmod 777 /usr/bin/quota.sh
-chmod 777 /usr/bin/limit.sh
+fi
 
 cat >/etc/systemd/system/tendang.service << EOF
 [Unit]
@@ -24,17 +22,8 @@ Restart=always
 [Install]
 WantedBy=multi-user.target
 EOF
-
-cat >/etc/systemd/system/tendangx.service << EOF
-[Unit]
-Description=By: PT.XD Project
-ProjectAfter=network.target
-
-[Service]
-WorkingDirectory=/root
-ExecStart=/usr/bin/quota.sh
-Restart=always
-
-[Install]
-WantedBy=multi-user.target
-EOF
+echo "*/11 * * * * root quota.sh" >> /etc/crontab
+/etc/init.d/cron restart
+service cron restart
+systemctl enable tendang
+systemctl restart tendang
